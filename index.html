@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astral Mystic - Tu Portal Astrológico</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap');
+        
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+        
+        .stars-bg {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b69 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stars-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+                radial-gradient(2px 2px at 40px 70px, #fff, transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(1px 1px at 130px 80px, #fff, transparent),
+                radial-gradient(2px 2px at 160px 30px, #fff, transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: twinkle 4s ease-in-out infinite alternate;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        
+        .zodiac-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .zodiac-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(138, 43, 226, 0.3);
+        }
+        
+        .mystical-glow {
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .price-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .price-card:hover {
+            border-color: rgba(138, 43, 226, 0.5);
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(138, 43, 226, 0.4);
+        }
+
+        .price-card.selected {
+            border-color: #8b5cf6;
+            background: rgba(139, 92, 246, 0.2);
+        }
+
+        .payment-form {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="stars-bg min-h-screen text-white font-poppins">
+    <!-- Header -->
+    <header class="relative z-10 py-6">
+        <div class="container mx-auto px-4">
+            <nav class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="text-4xl">🌙</div>
+                    <h1 class="text-2xl font-cinzel font-bold text-purple-200">Astral Mystic</h1>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#horoscopo" class="hover:text-purple-300 transition-colors">Horóscopo</a>
+                    <a href="#signos" class="hover:text-purple-300 transition-colors">Signos</a>
+                    <a href="#carta" class="hover:text-purple-300 transition-colors">Carta Astral</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative z-10 py-20 text-center">
+        <div class="container mx-auto px-4">
+            <div class="floating">
+                <div class="text-8xl mb-6">✨</div>
+            </div>
+            <h2 class="text-5xl md:text-7xl font-cinzel font-bold mb-6 bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent">
+                Descubre tu Destino
+            </h2>
+            <p class="text-xl md:text-2xl mb-8 text-purple-200 max-w-3xl mx-auto">
+                Explora los misterios del cosmos y encuentra las respuestas que buscas en las estrellas
+            </p>
+            <button onclick="mostrarHoroscopoHoy()" class="mystical-glow bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                Ver Horóscopo de Hoy ✨
+            </button>
+        </div>
+    </section>
+
+    <!-- Horóscopo del Día -->
+    <section id="horoscopo-hoy" class="relative z-10 py-16 hidden">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <h3 class="text-3xl font-cinzel font-bold text-center mb-8 text-purple-200">Horóscopo de Hoy</h3>
+                <div class="zodiac-card rounded-2xl p-8 text-center">
+                    <div class="text-6xl mb-4" id="signo-emoji">🌟</div>
+                    <h4 class="text-2xl font-cinzel font-bold mb-4" id="signo-nombre">Selecciona tu signo</h4>
+                    <p class="text-lg mb-6" id="horoscopo-texto">Elige tu signo zodiacal para ver tu horóscopo personalizado de hoy.</p>
+                    <div class="grid grid-cols-3 md:grid-cols-6 gap-4">
+                        <button onclick="mostrarHoroscopo('Aries', '♈', 'Hoy es un día perfecto para nuevos comienzos. Tu energía está en su punto más alto.')" class="zodiac-card p-3 rounded-lg hover:bg-purple-600 transition-colors">
+                            <div class="text-2xl">♈</div>
+                            <div class="text-sm">Aries</div>
+                        </button>
+                        <button onclick="mostrarHoroscopo('Tauro', '♉', 'La estabilidad que buscas está cerca. Confía en tu intuición financiera.')" class="zodiac-card p-3 rounded-lg hover:bg-purple-600 transition-colors">
+                            <div class="text-2xl">♉</div>
+                            <div class="text-sm">Tauro</div>
+                        </button>
+                        <button onclick="mostrarHoroscopo('Géminis', '♊', 'Tu comunicación brillará hoy. Es momento de expresar tus ideas creativas.')" class="zodiac-card p-3 rounded-lg hover:bg-purple-600 transition-colors">
+                            <div class="text-2xl">♊</div>
+                            <div class="text-sm">Géminis</div>
+                        </button>
+                        <button onclick="mostrarHoroscopo('Cáncer', '♋', 'Las emociones están intensas. Dedica tiempo a cuidar de ti y tus seres queridos.')" class="zodiac-card p-3 rounded-lg hover:bg-purple-600 transition-colors">
+                            <div class="text-2xl">♋</div>
+                            <div class="text-sm">Cáncer</div>
+                        </button>
+                        <button onclick="mostrarHoroscopo('Leo', '♌', 'Tu carisma natural te abrirá puertas. Brilla con confianza en todo lo que hagas.')" class="zodiac-card p-3 rounded-lg hover:bg-purple-600 transition-colors">
+                            <div class="text-2xl">♌</div>
+                            <div class="text-sm">Leo</div>
+                        </button>
+                        <button onclick="mostrarHoroscopo('Virgo', '♍', 'La perfección está en los detalles. Tu meticulosidad será muy valorada hoy.')" class="zodiac-card p-3 rounded-lg hover:bg-purple-600 transition-colors">
+                            <div class="text-2xl">♍</div>
+                            <div class="text-sm">Virgo</div>
+                        </button>
+                        <button onclick="mostrarHoroscopo('Libra', '♎', 'El equilibrio y la armonía guían tu día. Busca la belleza en todo lo que te rodea.')" class="zodiac-card p-3 rounded-lg hover:bg-purple-600 transition-colors">
+                            <div class="text-2xl">♎</div>
+                            <div class="text-sm">Libra</div>
+                        </button>
+                        <button onclick="mostrarHoroscopo('Escorpio', '♏', 'Tu intensidad emocional es tu fortaleza. Transforma los desafíos en oportunidades.')" class="zodiac-card p-3 rounded-lg hover:bg-purple-600 transition-colors">
+                            <div class="text-2xl">♏</div>
+                            <div class="text-sm">Escorpio</div>
+                        </button>
+                        <button onclick="mostrarHoroscopo('Sagitario', '♐', 'La aventura te llama. Es momento de expandir tus horizontes y explorar nuevos caminos.')" class="zodiac-card p-3 rounded-lg hover:bg-purple-600 transition-colors">
+                            <div class="text-2xl">♐</div>
+                            <div class="text-sm">Sagitario</div>
+                        </button>
+                        <button onclick="mostrarHoroscopo('Capricornio', '♑', 'Tu disciplina y perseverancia te llevarán al éxito. Mantén el enfoque en tus metas.')" class="zodiac-card p-3 rounded-lg hover:bg-purple-600 transition-colors">
+                            <div class="text-2xl">♑</div>
+                            <div class="text-sm">Capricornio</div>
+                        </button>
+                        <button onclick="mostrarHoroscopo('Acuario', '♒', 'Tu originalidad e innovación destacarán. Comparte tus ideas únicas con el mundo.')" class="zodiac-card p-3 rounded-lg hover:bg-purple-600 transition-colors">
+                            <div class="text-2xl">♒</div>
+                            <div class="text-sm">Acuario</div>
+                        </button>
+                        <button onclick="mostrarHoroscopo('Piscis', '♓', 'Tu intuición está especialmente aguda. Confía en tus sueños y visiones creativas.')" class="zodiac-card p-3 rounded-lg hover:bg-purple-600 transition-colors">
+                            <div class="text-2xl">♓</div>
+                            <div class="text-sm">Piscis</div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Signos Zodiacales -->
+    <section id="signos" class="relative z-10 py-16">
+        <div class="container mx-auto px-4">
+            <h3 class="text-4xl font-cinzel font-bold text-center mb-12 text-purple-200">Los 12 Signos Zodiacales</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Aries -->
+                <div class="zodiac-card rounded-2xl p-6 text-center">
+                    <div class="text-5xl mb-4">♈</div>
+                    <h4 class="text-xl font-cinzel font-bold mb-2">Aries</h4>
+                    <p class="text-purple-200 mb-3">21 Mar - 19 Abr</p>
+                    <p class="text-sm">Elemento: Fuego | Planeta: Marte</p>
+                    <p class="text-sm mt-2 text-purple-300">Valiente, enérgico y pionero</p>
+                </div>
+
+                <!-- Tauro -->
+                <div class="zodiac-card rounded-2xl p-6 text-center">
+                    <div class="text-5xl mb-4">♉</div>
+                    <h4 class="text-xl font-cinzel font-bold mb-2">Tauro</h4>
+                    <p class="text-purple-200 mb-3">20 Abr - 20 May</p>
+                    <p class="text-sm">Elemento: Tierra | Planeta: Venus</p>
+                    <p class="text-sm mt-2 text-purple-300">Estable, leal y determinado</p>
+                </div>
+
+                <!-- Géminis -->
+                <div class="zodiac-card rounded-2xl p-6 text-center">
+                    <div class="text-5xl mb-4">♊</div>
+                    <h4 class="text-xl font-cinzel font-bold mb-2">Géminis</h4>
+                    <p class="text-purple-200 mb-3">21 May - 20 Jun</p>
+                    <p class="text-sm">Elemento: Aire | Planeta: Mercurio</p>
+                    <p class="text-sm mt-2 text-purple-300">Comunicativo, versátil y curioso</p>
+                </div>
+
+                <!-- Cáncer -->
+                <div class="zodiac-card rounded-2xl p-6 text-center">
+                    <div class="text-5xl mb-4">♋</div>
+                    <h4 class="text-xl font-cinzel font-bold mb-2">Cáncer</h4>
+                    <p class="text-purple-200 mb-3">21 Jun - 22 Jul</p>
+                    <p class="text-sm">Elemento: Agua | Planeta: Luna</p>
+                    <p class="text-sm mt-2 text-purple-300">Emocional, protector y empático</p>
+                </div>
+
+                <!-- Leo -->
+                <div class="zodiac-card rounded-2xl p-6 text-center">
+                    <div class="text-5xl mb-4">♌</div>
+                    <h4 class="text-xl font-cinzel font-bold mb-2">Leo</h4>
+                    <p class="text-purple-200 mb-3">23 Jul - 22 Ago</p>
+                    <p class="text-sm">Elemento: Fuego | Planeta: Sol</p>
+                    <p class="text-sm mt-2 text-purple-300">Carismático, generoso y creativo</p>
+                </div>
+
+                <!-- Virgo -->
+                <div class="zodiac-card rounded-2xl p-6 text-center">
+                    <div class="text-5xl mb-4">♍</div>
+                    <h4 class="text-xl font-cinzel font-bold mb-2">Virgo</h4>
+                    <p class="text-purple-200 mb-3">23 Ago - 22 Sep</p>
+                    <p class="text-sm">Elemento: Tierra | Planeta: Mercurio</p>
+                    <p class="text-sm mt-2 text-purple-300">Analítico, perfeccionista y servicial</p>
+                </div>
+
+                <!-- Libra -->
+                <div class="zodiac-card rounded-2xl p-6 text-center">
+                    <div class="text-5xl mb-4">♎</div>
+                    <h4 class="text-xl font-cinzel font-bold mb-2">Libra</h4>
+                    <p class="text-purple-200 mb-3">23 Sep - 22 Oct</p>
+                    <p class="text-sm">Elemento: Aire | Planeta: Venus</p>
+                    <p class="text-sm mt-2 text-purple-300">Equilibrado, diplomático y justo</p>
+                </div>
+
+                <!-- Escorpio -->
+                <div class="zodiac-card rounded-2xl p-6 text-center">
+                    <div class="text-5xl mb-4">♏</div>
+                    <h4 class="text-xl font-cinzel font-bold mb-2">Escorpio</h4>
+                    <p class="text-purple-200 mb-3">23 Oct - 21 Nov</p>
+                    <p class="text-sm">Elemento: Agua | Planeta: Plutón</p>
+                    <p class="text-sm mt-2 text-purple-300">Intenso, misterioso y transformador</p>
+                </div>
+
+                <!-- Sagitario -->
+                <div class="zodiac-card rounded-2xl p-6 text-center">
+                    <div class="text-5xl mb-4">♐</div>
+                    <h4 class="text-xl font-cinzel font-bold mb-2">Sagitario</h4>
+                    <p class="text-purple-200 mb-3">22 Nov - 21 Dic</p>
+                    <p class="text-sm">Elemento: Fuego | Planeta: Júpiter</p>
+                    <p class="text-sm mt-2 text-purple-300">Aventurero, optimista y filosófico</p>
+                </div>
+
+                <!-- Capricornio -->
+                <div class="zodiac-card rounded-2xl p-6 text-center">
+                    <div class="text-5xl mb-4">♑</div>
+                    <h4 class="text-xl font-cinzel font-bold mb-2">Capricornio</h4>
+                    <p class="text-purple-200 mb-3">22 Dic - 19 Ene</p>
+                    <p class="text-sm">Elemento: Tierra | Planeta: Saturno</p>
+                    <p class="text-sm mt-2 text-purple-300">Ambicioso, disciplinado y responsable</p>
+                </div>
+
+                <!-- Acuario -->
+                <div class="zodiac-card rounded-2xl p-6 text-center">
+                    <div class="text-5xl mb-4">♒</div>
+                    <h4 class="text-xl font-cinzel font-bold mb-2">Acuario</h4>
+                    <p class="text-purple-200 mb-3">20 Ene - 18 Feb</p>
+                    <p class="text-sm">Elemento: Aire | Planeta: Urano</p>
+                    <p class="text-sm mt-2 text-purple-300">Innovador, independiente y humanitario</p>
+                </div>
+
+                <!-- Piscis -->
+                <div class="zodiac-card rounded-2xl p-6 text-center">
+                    <div class="text-5xl mb-4">♓</div>
+                    <h4 class="text-xl font-cinzel font-bold mb-2">Piscis</h4>
+                    <p class="text-purple-200 mb-3">19 Feb - 20 Mar</p>
+                    <p class="text-sm">Elemento: Agua | Planeta: Neptuno</p>
+                    <p class="text-sm mt-2 text-purple-300">Intuitivo, compasivo y artístico</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Carta Astral -->
+    <section id="carta" class="relative z-10 py-16">
+        <div class="container mx-auto px-4">
+            <div class="max-w-5xl mx-auto text-center">
+                <h3 class="text-4xl font-cinzel font-bold mb-8 text-purple-200">Calculadora de Carta Astral</h3>
+                <div class="zodiac-card rounded-2xl p-8">
+                    <div class="text-6xl mb-6">🌌</div>
+                    <p class="text-lg mb-8">Para crear tu carta astral personalizada, necesitamos información precisa sobre tu nacimiento</p>
+                    
+                    <!-- Formulario de Datos Personales -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="text-left">
+                            <label class="block text-sm font-medium mb-2 text-purple-200">Nombre Completo *</label>
+                            <input type="text" id="nombre-completo" placeholder="Tu nombre completo" class="w-full p-3 rounded-lg bg-purple-900/50 border border-purple-600 text-white placeholder-purple-300 focus:border-purple-400 focus:outline-none">
+                        </div>
+                        <div class="text-left">
+                            <label class="block text-sm font-medium mb-2 text-purple-200">Género</label>
+                            <select id="genero" class="w-full p-3 rounded-lg bg-purple-900/50 border border-purple-600 text-white focus:border-purple-400 focus:outline-none">
+                                <option value="">Seleccionar...</option>
+                                <option value="masculino">Masculino</option>
+                                <option value="femenino">Femenino</option>
+                                <option value="otro">Otro</option>
+                                <option value="prefiero-no-decir">Prefiero no decir</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Datos de Nacimiento -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="text-left">
+                            <label class="block text-sm font-medium mb-2 text-purple-200">Fecha de Nacimiento *</label>
+                            <input type="date" id="fecha-nacimiento" class="w-full p-3 rounded-lg bg-purple-900/50 border border-purple-600 text-white focus:border-purple-400 focus:outline-none">
+                            <p class="text-xs text-purple-300 mt-1">Día, mes y año exactos</p>
+                        </div>
+                        <div class="text-left">
+                            <label class="block text-sm font-medium mb-2 text-purple-200">Hora de Nacimiento *</label>
+                            <input type="time" id="hora-nacimiento" class="w-full p-3 rounded-lg bg-purple-900/50 border border-purple-600 text-white focus:border-purple-400 focus:outline-none">
+                            <p class="text-xs text-purple-300 mt-1">Hora exacta (consulta tu acta de nacimiento)</p>
+                        </div>
+                        <div class="text-left">
+                            <label class="block text-sm font-medium mb-2 text-purple-200">¿Conoces la hora exacta?</label>
+                            <select id="precision-hora" class="w-full p-3 rounded-lg bg-purple-900/50 border border-purple-600 text-white focus:border-purple-400 focus:outline-none">
+                                <option value="exacta">Sí, hora exacta</option>
+                                <option value="aproximada">Hora aproximada</option>
+                                <option value="desconocida">No la conozco</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Lugar de Nacimiento -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="text-left">
+                            <label class="block text-sm font-medium mb-2 text-purple-200">Ciudad de Nacimiento *</label>
+                            <input type="text" id="ciudad-nacimiento" placeholder="Ej: Madrid, Barcelona, Ciudad de México" class="w-full p-3 rounded-lg bg-purple-900/50 border border-purple-600 text-white placeholder-purple-300 focus:border-purple-400 focus:outline-none">
+                        </div>
+                        <div class="text-left">
+                            <label class="block text-sm font-medium mb-2 text-purple-200">País de Nacimiento *</label>
+                            <select id="pais-nacimiento" class="w-full p-3 rounded-lg bg-purple-900/50 border border-purple-600 text-white focus:border-purple-400 focus:outline-none">
+                                <option value="">Seleccionar país...</option>
+                                <option value="España">España</option>
+                                <option value="México">México</option>
+                                <option value="Argentina">Argentina</option>
+                                <option value="Colombia">Colombia</option>
+                                <option value="Chile">Chile</option>
+                                <option value="Perú">Perú</option>
+                                <option value="Venezuela">Venezuela</option>
+                                <option value="Ecuador">Ecuador</option>
+                                <option value="Uruguay">Uruguay</option>
+                                <option value="Paraguay">Paraguay</option>
+                                <option value="Bolivia">Bolivia</option>
+                                <option value="Costa Rica">Costa Rica</option>
+                                <option value="Guatemala">Guatemala</option>
+                                <option value="Honduras">Honduras</option>
+                                <option value="El Salvador">El Salvador</option>
+                                <option value="Nicaragua">Nicaragua</option>
+                                <option value="Panamá">Panamá</option>
+                                <option value="República Dominicana">República Dominicana</option>
+                                <option value="Puerto Rico">Puerto Rico</option>
+                                <option value="Cuba">Cuba</option>
+                                <option value="Estados Unidos">Estados Unidos</option>
+                                <option value="otro">Otro país</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Información Adicional -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="text-left">
+                            <label class="block text-sm font-medium mb-2 text-purple-200">¿Qué te interesa más conocer?</label>
+                            <select id="interes-principal" class="w-full p-3 rounded-lg bg-purple-900/50 border border-purple-600 text-white focus:border-purple-400 focus:outline-none">
+                                <option value="personalidad">Mi personalidad y carácter</option>
+                                <option value="amor">Vida amorosa y relaciones</option>
+                                <option value="carrera">Carrera y propósito de vida</option>
+                                <option value="salud">Salud y bienestar</option>
+                                <option value="dinero">Finanzas y abundancia</option>
+                                <option value="espiritualidad">Crecimiento espiritual</option>
+                                <option value="todo">Todo lo anterior</option>
+                            </select>
+                        </div>
+                        <div class="text-left">
+                            <label class="block text-sm font-medium mb-2 text-purple-200">Nivel de experiencia en astrología</label>
+                            <select id="nivel-experiencia" class="w-full p-3 rounded-lg bg-purple-900/50 border border-purple-600 text-white focus:border-purple-400 focus:outline-none">
+                                <option value="principiante">Principiante - Explícame todo</option>
+                                <option value="intermedio">Intermedio - Conozco lo básico</option>
+                                <option value="avanzado">Avanzado - Dame detalles técnicos</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="text-left mb-6">
+                        <label class="block text-sm font-medium mb-2 text-purple-200">Comentarios adicionales (opcional)</label>
+                        <textarea id="comentarios" placeholder="¿Hay algo específico que te gustaría saber sobre tu carta astral?" rows="3" class="w-full p-3 rounded-lg bg-purple-900/50 border border-purple-600 text-white placeholder-purple-300 focus:border-purple-400 focus:outline-none resize-none"></textarea>
+                    </div>
+
+                    <div class="text-xs text-purple-300 mb-6 text-left bg-purple-900/30 p-4 rounded-lg">
+                        <p class="mb-2"><strong>💡 Consejos para obtener una carta astral más precisa:</strong></p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>La hora exacta es crucial - consulta tu acta de nacimiento</li>
+                            <li>Si no conoces la hora, puedes usar el mediodía (12:00) como aproximación</li>
+                            <li>La ciudad específica afecta los cálculos astronómicos</li>
+                            <li>Todos los campos marcados con * son obligatorios</li>
+                        </ul>
+                    </div>
+                    
+                    <button onclick="validarYMostrarPagos()" class="mystical-glow bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                        Continuar con el Pago ✨
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Pagos -->
+    <section id="seccion-pagos" class="relative z-10 py-16 hidden">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <h3 class="text-4xl font-cinzel font-bold text-center mb-8 text-purple-200">Elige tu Servicio Astrológico</h3>
+                
+                <!-- Opciones de Servicio -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                    <!-- Carta Astral Digital -->
+                    <div class="price-card rounded-2xl p-8 text-center cursor-pointer" onclick="seleccionarServicio('digital', 15)">
+                        <div class="text-6xl mb-4">📊</div>
+                        <h4 class="text-2xl font-cinzel font-bold mb-4">Carta Astral Digital</h4>
+                        <div class="text-4xl font-bold text-green-400 mb-4">$15 USD</div>
+                        <ul class="text-left space-y-3 mb-6">
+                            <li class="flex items-center"><span class="text-green-400 mr-2">✓</span> Análisis completo personalizado</li>
+                            <li class="flex items-center"><span class="text-green-400 mr-2">✓</span> Sol, Luna y Ascendente detallados</li>
+                            <li class="flex items-center"><span class="text-green-400 mr-2">✓</span> Posiciones de todos los planetas</li>
+                            <li class="flex items-center"><span class="text-green-400 mr-2">✓</span> Interpretación según tus intereses</li>
+                            <li class="flex items-center"><span class="text-green-400 mr-2">✓</span> Entrega inmediata</li>
+                            <li class="flex items-center"><span class="text-green-400 mr-2">✓</span> Formato PDF descargable</li>
+                        </ul>
+                        <div class="text-sm text-purple-300">Perfecto para comenzar tu viaje astrológico</div>
+                    </div>
+
+                    <!-- Consulta Personal por Zoom -->
+                    <div class="price-card rounded-2xl p-8 text-center cursor-pointer" onclick="seleccionarServicio('zoom', 30)">
+                        <div class="text-6xl mb-4">🎥</div>
+                        <h4 class="text-2xl font-cinzel font-bold mb-4">Consulta Personal por Zoom</h4>
+                        <div class="text-4xl font-bold text-green-400 mb-4">$30 USD</div>
+                        <ul class="text-left space-y-3 mb-6">
+                            <li class="flex items-center"><span class="text-green-400 mr-2">✓</span> Todo lo de la Carta Digital</li>
+                            <li class="flex items-center"><span class="text-green-400 mr-2">✓</span> Sesión personal de 45 minutos</li>
+                            <li class="flex items-center"><span class="text-green-400 mr-2">✓</span> Consulta en vivo por Zoom</li>
+                            <li class="flex items-center"><span class="text-green-400 mr-2">✓</span> Respuestas a tus preguntas</li>
+                            <li class="flex items-center"><span class="text-green-400 mr-2">✓</span> Consejos personalizados</li>
+                            <li class="flex items-center"><span class="text-green-400 mr-2">✓</span> Grabación de la sesión</li>
+                        </ul>
+                        <div class="text-sm text-purple-300 bg-gradient-to-r from-purple-600 to-pink-600 px-3 py-1 rounded-full">
+                            ⭐ Más Popular
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario de Pago -->
+                <div id="formulario-pago" class="payment-form rounded-2xl p-8 hidden">
+                    <h4 class="text-2xl font-cinzel font-bold text-center mb-8">Información de Pago</h4>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Resumen del Pedido -->
+                        <div class="zodiac-card rounded-lg p-6">
+                            <h5 class="text-xl font-bold mb-4 text-purple-200">Resumen del Pedido</h5>
+                            <div class="space-y-3">
+                                <div class="flex justify-between">
+                                    <span id="servicio-seleccionado">Servicio:</span>
+                                    <span id="nombre-servicio">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Cliente:</span>
+                                    <span id="cliente-nombre">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Subtotal:</span>
+                                    <span id="subtotal">$0.00</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Impuestos (8%):</span>
+                                    <span id="impuestos">$0.00</span>
+                                </div>
+                                <hr class="border-purple-600">
+                                <div class="flex justify-between text-xl font-bold text-green-400">
+                                    <span>Total:</span>
+                                    <span id="total">$0.00</span>
+                                </div>
+                            </div>
+
+                            <!-- Programar Cita (solo para Zoom) -->
+                            <div id="programar-cita" class="mt-6 hidden">
+                                <h6 class="font-bold mb-3 text-purple-200">Programar tu Consulta</h6>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm mb-1">Fecha preferida:</label>
+                                        <input type="date" id="fecha-cita" class="w-full p-2 rounded bg-purple-900/50 border border-purple-600 text-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm mb-1">Hora preferida:</label>
+                                        <select id="hora-cita" class="w-full p-2 rounded bg-purple-900/50 border border-purple-600 text-white">
+                                            <option value="">Seleccionar hora...</option>
+                                            <option value="09:00">9:00 AM</option>
+                                            <option value="10:00">10:00 AM</option>
+                                            <option value="11:00">11:00 AM</option>
+                                            <option value="14:00">2:00 PM</option>
+                                            <option value="15:00">3:00 PM</option>
+                                            <option value="16:00">4:00 PM</option>
+                                            <option value="17:00">5:00 PM</option>
+                                            <option value="18:00">6:00 PM</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Datos de Pago -->
+                        <div class="space-y-6">
+                            <!-- Información de Tarjeta -->
+                            <div class="zodiac-card rounded-lg p-6">
+                                <h5 class="text-lg font-bold mb-4 text-purple-200">Información de Tarjeta</h5>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm mb-2">Número de Tarjeta *</label>
+                                        <input type="text" id="numero-tarjeta" placeholder="1234 5678 9012 3456" maxlength="19" class="w-full p-3 rounded-lg bg-purple-900/50 border border-purple-600 text-white placeholder-purple-300 focus:border-purple-400 focus:outline-none">
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm mb-2">Fecha de Vencimiento *</label>
+                                            <input type="text" id="fecha-vencimiento" placeholder="MM/AA" maxlength="5" class="w-full p-3 rounded-lg bg-purple-900/50 border border-purple-600 text-white placeholder-purple-300 focus:border-purple-400 focus:outline-none">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm mb-2">CVV *</label>
+                                            <input type="text" id="cvv" placeholder="123" maxlength="4" class="w-full p-3 rounded-lg bg-purple-900/50 border border-purple-600 text-white placeholder-purple-300 focus:border-purple-400 focus:outline-none">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm mb-2">Nombre en la Tarjeta *</label>
+                                        <input type="text" id="nombre-tarjeta" placeholder="Como aparece en la tarjeta" class="w-full p-3 rounded-lg bg-purple-900/50 border border-purple-600 text-white placeholder-purple-300 focus:border-purple-400 focus:outline-none">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Información de Facturación -->
+                            <div class="zodiac-card rounded-lg p-6">
+                                <h5 class="text-lg font-bold mb-4 text-purple-200">Información de Facturación</h5>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm mb-2">Email *</label>
+                                        <input type="email" id="email-facturacion" placeholder="tu@email.com" class="w-full p-3 rounded-lg bg-purple-900/50 border border-purple-600 text-white placeholder-purple-300 focus:border-purple-400 focus:outline-none">
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm mb-2">País *</label>
+                                            <select id="pais-facturacion" class="w-full p-3 rounded-lg bg-purple-900/50 border border-purple-600 text-white focus:border-purple-400 focus:outline-none">
+                                                <option value="">Seleccionar...</option>
+                                                <option value="ES">España</option>
+                                                <option value="MX">México</option>
+                                                <option value="AR">Argentina</option>
+                                                <option value="CO">Colombia</option>
+                                                <option value="US">Estados Unidos</option>
+                                                <option value="otros">Otro</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm mb-2">Código Postal</label>
+                                            <input type="text" id="codigo-postal" placeholder="12345" class="w-full p-3 rounded-lg bg-purple-900/50 border border-purple-600 text-white placeholder-purple-300 focus:border-purple-400 focus:outline-none">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Botón de Pago -->
+                            <button onclick="procesarPago()" class="w-full mystical-glow bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                                <span id="texto-boton-pago">Procesar Pago</span> 🔒
+                            </button>
+
+                            <div class="text-xs text-purple-300 text-center">
+                                🔒 Pago 100% seguro y encriptado<br>
+                                💳 Aceptamos todas las tarjetas principales
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Confirmación de Pago -->
+    <section id="confirmacion-pago" class="relative z-10 py-16 hidden">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center">
+                <div class="zodiac-card rounded-2xl p-8">
+                    <div class="text-8xl mb-6">✅</div>
+                    <h3 class="text-3xl font-cinzel font-bold mb-6 text-green-400">¡Pago Procesado Exitosamente!</h3>
+                    <div id="detalles-confirmacion" class="text-left bg-purple-900/30 p-6 rounded-lg mb-6">
+                        <!-- Se llenará dinámicamente -->
+                    </div>
+                    <div class="text-sm text-purple-300 mb-6">
+                        📧 Hemos enviado la confirmación a tu email<br>
+                        🎯 Tu carta astral estará lista en unos momentos
+                    </div>
+                    <button onclick="mostrarCartaAstral()" class="mystical-glow bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                        Ver Mi Carta Astral ✨
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resultado Carta Astral -->
+    <section id="resultado-carta" class="relative z-10 py-16 hidden">
+        <div class="container mx-auto px-4">
+            <div class="max-w-5xl mx-auto">
+                <h3 class="text-4xl font-cinzel font-bold text-center mb-8 text-purple-200">Tu Carta Astral Personalizada</h3>
+                
+                <!-- Información Personal -->
+                <div class="zodiac-card rounded-lg p-6 mb-6 text-left">
+                    <h5 class="text-xl font-bold text-purple-200 mb-4">📋 Datos de Nacimiento</h5>
+                    <div id="datos-personales" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <!-- Se llenará dinámicamente -->
+                    </div>
+                </div>
+
+                <!-- Planetas Principales -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="zodiac-card p-6 rounded-lg text-left">
+                        <h5 class="font-bold text-purple-200 mb-3 text-lg">☀️ Sol - Tu Esencia</h5>
+                        <div id="sol-detalle" class="text-sm space-y-2">
+                            <!-- Se llenará dinámicamente -->
+                        </div>
+                    </div>
+                    <div class="zodiac-card p-6 rounded-lg text-left">
+                        <h5 class="font-bold text-purple-200 mb-3 text-lg">🌙 Luna - Tus Emociones</h5>
+                        <div id="luna-detalle" class="text-sm space-y-2">
+                            <!-- Se llenará dinámicamente -->
+                        </div>
+                    </div>
+                    <div class="zodiac-card p-6 rounded-lg text-left">
+                        <h5 class="font-bold text-purple-200 mb-3 text-lg">⬆️ Ascendente - Tu Imagen</h5>
+                        <div id="ascendente-detalle" class="text-sm space-y-2">
+                            <!-- Se llenará dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Planetas Adicionales -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="zodiac-card p-4 rounded-lg text-left">
+                        <h6 class="font-bold text-purple-200 mb-2">☿️ Mercurio</h6>
+                        <div id="mercurio-detalle" class="text-xs">
+                            <!-- Se llenará dinámicamente -->
+                        </div>
+                    </div>
+                    <div class="zodiac-card p-4 rounded-lg text-left">
+                        <h6 class="font-bold text-purple-200 mb-2">♀️ Venus</h6>
+                        <div id="venus-detalle" class="text-xs">
+                            <!-- Se llenará dinámicamente -->
+                        </div>
+                    </div>
+                    <div class="zodiac-card p-4 rounded-lg text-left">
+                        <h6 class="font-bold text-purple-200 mb-2">♂️ Marte</h6>
+                        <div id="marte-detalle" class="text-xs">
+                            <!-- Se llenará dinámicamente -->
+                        </div>
+                    </div>
+                    <div class="zodiac-card p-4 rounded-lg text-left">
+                        <h6 class="font-bold text-purple-200 mb-2">♃ Júpiter</h6>
+                        <div id="jupiter-detalle" class="text-xs">
+                            <!-- Se llenará dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interpretación Personalizada -->
+                <div class="zodiac-card p-6 rounded-lg text-left">
+                    <h5 class="text-xl font-bold text-purple-200 mb-4">🔮 Interpretación Personalizada</h5>
+                    <div id="interpretacion-personalizada" class="text-sm space-y-3">
+                        <!-- Se llenará dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative z-10 py-12 border-t border-purple-800">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex justify-center items-center space-x-3 mb-6">
+                <div class="text-3xl">🌙</div>
+                <h3 class="text-xl font-cinzel font-bold">Astral Mystic</h3>
+                <div class="text-3xl">✨</div>
+            </div>
+            <p class="text-purple-300 mb-4">Conectando almas con el cosmos desde 2024</p>
+            <div class="flex justify-center space-x-6 text-sm">
+                <span>🔮 Horóscopos Diarios</span>
+                <span>⭐ Cartas Astrales</span>
+                <span>🌟 Compatibilidad</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let datosPersonales = {};
+        let servicioSeleccionado = null;
+        let precioServicio = 0;
+
+        function mostrarHoroscopoHoy() {
+            document.getElementById('horoscopo-hoy').classList.remove('hidden');
+            document.getElementById('horoscopo-hoy').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function mostrarHoroscopo(signo, emoji, texto) {
+            document.getElementById('signo-emoji').textContent = emoji;
+            document.getElementById('signo-nombre').textContent = signo;
+            document.getElementById('horoscopo-texto').textContent = texto;
+        }
+
+        function validarYMostrarPagos() {
+            // Obtener todos los valores del formulario
+            const nombre = document.getElementById('nombre-completo').value.trim();
+            const genero = document.getElementById('genero').value;
+            const fecha = document.getElementById('fecha-nacimiento').value;
+            const hora = document.getElementById('hora-nacimiento').value;
+            const precisionHora = document.getElementById('precision-hora').value;
+            const ciudad = document.getElementById('ciudad-nacimiento').value.trim();
+            const pais = document.getElementById('pais-nacimiento').value;
+            const interes = document.getElementById('interes-principal').value;
+            const experiencia = document.getElementById('nivel-experiencia').value;
+            const comentarios = document.getElementById('comentarios').value.trim();
+
+            // Validar campos obligatorios
+            const camposObligatorios = [
+                { valor: nombre, nombre: 'Nombre completo' },
+                { valor: fecha, nombre: 'Fecha de nacimiento' },
+                { valor: hora, nombre: 'Hora de nacimiento' },
+                { valor: ciudad, nombre: 'Ciudad de nacimiento' },
+                { valor: pais, nombre: 'País de nacimiento' }
+            ];
+
+            const camposFaltantes = camposObligatorios.filter(campo => !campo.valor);
+            
+            if (camposFaltantes.length > 0) {
+                const mensajeError = `Por favor, completa los siguientes campos obligatorios:\n• ${camposFaltantes.map(c => c.nombre).join('\n• ')}`;
+                alert(mensajeError);
+                return;
+            }
+
+            // Validar fecha no sea futura
+            const fechaNacimiento = new Date(fecha);
+            const hoy = new Date();
+            if (fechaNacimiento > hoy) {
+                alert('La fecha de nacimiento no puede ser en el futuro.');
+                return;
+            }
+
+            // Validar edad mínima (opcional)
+            const edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+            if (edad > 120) {
+                alert('Por favor, verifica la fecha de nacimiento ingresada.');
+                return;
+            }
+
+            // Guardar datos personales
+            datosPersonales = {
+                nombre, genero, fecha, hora, precisionHora, 
+                ciudad, pais, interes, experiencia, comentarios
+            };
+
+            // Mostrar sección de pagos
+            document.getElementById('seccion-pagos').classList.remove('hidden');
+            document.getElementById('seccion-pagos').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function seleccionarServicio(tipo, precio) {
+            // Remover selección anterior
+            document.querySelectorAll('.price-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Seleccionar nuevo servicio
+            event.currentTarget.classList.add('selected');
+            servicioSeleccionado = tipo;
+            precioServicio = precio;
+
+            // Actualizar resumen
+            const nombreServicio = tipo === 'digital' ? 'Carta Astral Digital' : 'Consulta Personal por Zoom';
+            document.getElementById('nombre-servicio').textContent = nombreServicio;
+            document.getElementById('cliente-nombre').textContent = datosPersonales.nombre;
+            
+            const subtotal = precio;
+            const impuestos = Math.round(subtotal * 0.08 * 100) / 100;
+            const total = subtotal + impuestos;
+
+            document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('impuestos').textContent = `$${impuestos.toFixed(2)}`;
+            document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('texto-boton-pago').textContent = `Pagar $${total.toFixed(2)}`;
+
+            // Mostrar/ocultar programación de cita
+            if (tipo === 'zoom') {
+                document.getElementById('programar-cita').classList.remove('hidden');
+            } else {
+                document.getElementById('programar-cita').classList.add('hidden');
+            }
+
+            // Mostrar formulario de pago
+            document.getElementById('formulario-pago').classList.remove('hidden');
+            document.getElementById('formulario-pago').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function procesarPago() {
+            // Validar campos de pago
+            const numeroTarjeta = document.getElementById('numero-tarjeta').value.trim();
+            const fechaVencimiento = document.getElementById('fecha-vencimiento').value.trim();
+            const cvv = document.getElementById('cvv').value.trim();
+            const nombreTarjeta = document.getElementById('nombre-tarjeta').value.trim();
+            const email = document.getElementById('email-facturacion').value.trim();
+            const pais = document.getElementById('pais-facturacion').value;
+
+            const camposPago = [
+                { valor: numeroTarjeta, nombre: 'Número de tarjeta' },
+                { valor: fechaVencimiento, nombre: 'Fecha de vencimiento' },
+                { valor: cvv, nombre: 'CVV' },
+                { valor: nombreTarjeta, nombre: 'Nombre en la tarjeta' },
+                { valor: email, nombre: 'Email' },
+                { valor: pais, nombre: 'País' }
+            ];
+
+            const camposFaltantesPago = camposPago.filter(campo => !campo.valor);
+            
+            if (camposFaltantesPago.length > 0) {
+                alert(`Por favor, completa: ${camposFaltantesPago.map(c => c.nombre).join(', ')}`);
+                return;
+            }
+
+            // Validar formato de tarjeta
+            if (numeroTarjeta.replace(/\s/g, '').length < 13) {
+                alert('Número de tarjeta inválido');
+                return;
+            }
+
+            // Validar email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Email inválido');
+                return;
+            }
+
+            // Validar cita para Zoom
+            if (servicioSeleccionado === 'zoom') {
+                const fechaCita = document.getElementById('fecha-cita').value;
+                const horaCita = document.getElementById('hora-cita').value;
+                
+                if (!fechaCita || !horaCita) {
+                    alert('Por favor, selecciona fecha y hora para tu consulta por Zoom');
+                    return;
+                }
+            }
+
+            // Simular procesamiento de pago
+            const boton = event.target;
+            boton.disabled = true;
+            boton.innerHTML = 'Procesando... ⏳';
+
+            setTimeout(() => {
+                mostrarConfirmacionPago();
+            }, 2000);
+        }
+
+        function mostrarConfirmacionPago() {
+            const subtotal = precioServicio;
+            const impuestos = Math.round(subtotal * 0.08 * 100) / 100;
+            const total = subtotal + impuestos;
+            const numeroTransaccion = 'TXN' + Date.now();
+            const fechaActual = new Date().toLocaleDateString('es-ES');
+
+            let detallesHTML = `
+                <div class="space-y-2">
+                    <div class="flex justify-between"><span>Número de transacción:</span><span class="font-mono">${numeroTransaccion}</span></div>
+                    <div class="flex justify-between"><span>Fecha:</span><span>${fechaActual}</span></div>
+                    <div class="flex justify-between"><span>Servicio:</span><span>${servicioSeleccionado === 'digital' ? 'Carta Astral Digital' : 'Consulta Personal por Zoom'}</span></div>
+                    <div class="flex justify-between"><span>Cliente:</span><span>${datosPersonales.nombre}</span></div>
+                    <div class="flex justify-between"><span>Email:</span><span>${document.getElementById('email-facturacion').value}</span></div>
+                    <div class="flex justify-between font-bold text-green-400"><span>Total pagado:</span><span>$${total.toFixed(2)} USD</span></div>
+            `;
+
+            if (servicioSeleccionado === 'zoom') {
+                const fechaCita = document.getElementById('fecha-cita').value;
+                const horaCita = document.getElementById('hora-cita').value;
+                detallesHTML += `
+                    <hr class="border-purple-600 my-3">
+                    <div class="flex justify-between"><span>Fecha de consulta:</span><span>${new Date(fechaCita).toLocaleDateString('es-ES')}</span></div>
+                    <div class="flex justify-between"><span>Hora:</span><span>${horaCita}</span></div>
+                    <div class="text-sm text-purple-300 mt-2">📧 Recibirás el enlace de Zoom por email 24 horas antes</div>
+                `;
+            }
+
+            detallesHTML += '</div>';
+            document.getElementById('detalles-confirmacion').innerHTML = detallesHTML;
+
+            // Ocultar sección de pagos y mostrar confirmación
+            document.getElementById('seccion-pagos').classList.add('hidden');
+            document.getElementById('confirmacion-pago').classList.remove('hidden');
+            document.getElementById('confirmacion-pago').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function mostrarCartaAstral() {
+            calcularCartaAstralCompleta(datosPersonales);
+            document.getElementById('confirmacion-pago').classList.add('hidden');
+            document.getElementById('resultado-carta').classList.remove('hidden');
+            document.getElementById('resultado-carta').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function calcularCartaAstralCompleta(datos) {
+            const fechaNacimiento = new Date(datos.fecha);
+            const mes = fechaNacimiento.getMonth() + 1;
+            const dia = fechaNacimiento.getDate();
+            const año = fechaNacimiento.getFullYear();
+
+            // Determinar signos
+            const signoSolar = determinarSigno(mes, dia);
+            const signos = ['Aries', 'Tauro', 'Géminis', 'Cáncer', 'Leo', 'Virgo', 'Libra', 'Escorpio', 'Sagitario', 'Capricornio', 'Acuario', 'Piscis'];
+            
+            // Simulación de cálculos (en aplicación real serían cálculos astronómicos complejos)
+            const horaNum = parseInt(datos.hora.split(':')[0]);
+            const minutoNum = parseInt(datos.hora.split(':')[1]);
+            
+            const lunaIndex = (mes + horaNum + datos.nombre.length) % 12;
+            const ascendenteIndex = (dia + minutoNum + datos.ciudad.length) % 12;
+            const mercurioIndex = (mes + dia + horaNum) % 12;
+            const venusIndex = (año % 12 + mes) % 12;
+            const marteIndex = (dia + horaNum + minutoNum) % 12;
+            const jupiterIndex = (año % 12 + horaNum) % 12;
+
+            const signoLuna = signos[lunaIndex];
+            const signoAscendente = signos[ascendenteIndex];
+            const signoMercurio = signos[mercurioIndex];
+            const signoVenus = signos[venusIndex];
+            const signoMarte = signos[marteIndex];
+            const signoJupiter = signos[jupiterIndex];
+
+            // Llenar datos personales
+            const datosPersonalesHTML = `
+                <div><strong>Nombre:</strong> ${datos.nombre}</div>
+                <div><strong>Fecha:</strong> ${formatearFecha(datos.fecha)}</div>
+                <div><strong>Hora:</strong> ${datos.hora} (${datos.precisionHora})</div>
+                <div><strong>Lugar:</strong> ${datos.ciudad}, ${datos.pais}</div>
+                <div><strong>Edad actual:</strong> ${calcularEdad(datos.fecha)} años</div>
+                <div><strong>Interés principal:</strong> ${obtenerTextoInteres(datos.interes)}</div>
+            `;
+            document.getElementById('datos-personales').innerHTML = datosPersonalesHTML;
+
+            // Llenar planetas principales
+            document.getElementById('sol-detalle').innerHTML = `
+                <div><strong>Signo:</strong> ${signoSolar}</div>
+                <div><strong>Elemento:</strong> ${obtenerElemento(signoSolar)}</div>
+                <div><strong>Cualidad:</strong> ${obtenerCualidad(signoSolar)}</div>
+                <div class="text-purple-300 mt-2">${obtenerDescripcionSol(signoSolar)}</div>
+            `;
+
+            document.getElementById('luna-detalle').innerHTML = `
+                <div><strong>Signo:</strong> ${signoLuna}</div>
+                <div><strong>Elemento:</strong> ${obtenerElemento(signoLuna)}</div>
+                <div><strong>Cualidad:</strong> ${obtenerCualidad(signoLuna)}</div>
+                <div class="text-purple-300 mt-2">${obtenerDescripcionLuna(signoLuna)}</div>
+            `;
+
+            document.getElementById('ascendente-detalle').innerHTML = `
+                <div><strong>Signo:</strong> ${signoAscendente}</div>
+                <div><strong>Elemento:</strong> ${obtenerElemento(signoAscendente)}</div>
+                <div><strong>Cualidad:</strong> ${obtenerCualidad(signoAscendente)}</div>
+                <div class="text-purple-300 mt-2">${obtenerDescripcionAscendente(signoAscendente)}</div>
+            `;
+
+            // Llenar planetas adicionales
+            document.getElementById('mercurio-detalle').innerHTML = `
+                <div><strong>${signoMercurio}</strong></div>
+                <div class="text-purple-300 mt-1">Comunicación y pensamiento</div>
+            `;
+
+            document.getElementById('venus-detalle').innerHTML = `
+                <div><strong>${signoVenus}</strong></div>
+                <div class="text-purple-300 mt-1">Amor y valores</div>
+            `;
+
+            document.getElementById('marte-detalle').innerHTML = `
+                <div><strong>${signoMarte}</strong></div>
+                <div class="text-purple-300 mt-1">Acción y energía</div>
+            `;
+
+            document.getElementById('jupiter-detalle').innerHTML = `
+                <div><strong>${signoJupiter}</strong></div>
+                <div class="text-purple-300 mt-1">Expansión y sabiduría</div>
+            `;
+
+            // Interpretación personalizada
+            const interpretacionHTML = generarInterpretacionPersonalizada(datos, {
+                sol: signoSolar,
+                luna: signoLuna,
+                ascendente: signoAscendente,
+                mercurio: signoMercurio,
+                venus: signoVenus,
+                marte: signoMarte
+            });
+            document.getElementById('interpretacion-personalizada').innerHTML = interpretacionHTML;
+        }
+
+        // Formateo de número de tarjeta
+        document.getElementById('numero-tarjeta').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+        });
+
+        // Formateo de fecha de vencimiento
+        document.getElementById('fecha-vencimiento').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+        });
+
+        // Funciones auxiliares (mismas que antes)
+        function formatearFecha(fecha) {
+            const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(fecha).toLocaleDateString('es-ES', opciones);
+        }
+
+        function calcularEdad(fechaNacimiento) {
+            const hoy = new Date();
+            const nacimiento = new Date(fechaNacimiento);
+            let edad = hoy.getFullYear() - nacimiento.getFullYear();
+            const mesActual = hoy.getMonth();
+            const mesNacimiento = nacimiento.getMonth();
+            
+            if (mesActual < mesNacimiento || (mesActual === mesNacimiento && hoy.getDate() < nacimiento.getDate())) {
+                edad--;
+            }
+            return edad;
+        }
+
+        function obtenerTextoInteres(interes) {
+            const intereses = {
+                'personalidad': 'Personalidad y carácter',
+                'amor': 'Vida amorosa y relaciones',
+                'carrera': 'Carrera y propósito de vida',
+                'salud': 'Salud y bienestar',
+                'dinero': 'Finanzas y abundancia',
+                'espiritualidad': 'Crecimiento espiritual',
+                'todo': 'Análisis completo'
+            };
+            return intereses[interes] || interes;
+        }
+
+        function obtenerElemento(signo) {
+            const elementos = {
+                'Aries': 'Fuego', 'Leo': 'Fuego', 'Sagitario': 'Fuego',
+                'Tauro': 'Tierra', 'Virgo': 'Tierra', 'Capricornio': 'Tierra',
+                'Géminis': 'Aire', 'Libra': 'Aire', 'Acuario': 'Aire',
+                'Cáncer': 'Agua', 'Escorpio': 'Agua', 'Piscis': 'Agua'
+            };
+            return elementos[signo];
+        }
+
+        function obtenerCualidad(signo) {
+            const cualidades = {
+                'Aries': 'Cardinal', 'Cáncer': 'Cardinal', 'Libra': 'Cardinal', 'Capricornio': 'Cardinal',
+                'Tauro': 'Fijo', 'Leo': 'Fijo', 'Escorpio': 'Fijo', 'Acuario': 'Fijo',
+                'Géminis': 'Mutable', 'Virgo': 'Mutable', 'Sagitario': 'Mutable', 'Piscis': 'Mutable'
+            };
+            return cualidades[signo];
+        }
+
+        function obtenerDescripcionSol(signo) {
+            const descripciones = {
+                'Aries': 'Líder natural con gran energía y determinación.',
+                'Tauro': 'Persona estable, práctica y con gran fuerza de voluntad.',
+                'Géminis': 'Comunicativo, versátil y con gran curiosidad intelectual.',
+                'Cáncer': 'Emocional, protector y con fuerte conexión familiar.',
+                'Leo': 'Carismático, creativo y con gran presencia personal.',
+                'Virgo': 'Analítico, perfeccionista y orientado al servicio.',
+                'Libra': 'Equilibrado, diplomático y amante de la armonía.',
+                'Escorpio': 'Intenso, transformador y con gran profundidad emocional.',
+                'Sagitario': 'Aventurero, filosófico y amante de la libertad.',
+                'Capricornio': 'Ambicioso, disciplinado y orientado al éxito.',
+                'Acuario': 'Innovador, independiente y con visión humanitaria.',
+                'Piscis': 'Intuitivo, compasivo y con gran sensibilidad artística.'
+            };
+            return descripciones[signo];
+        }
+
+        function obtenerDescripcionLuna(signo) {
+            const descripciones = {
+                'Aries': 'Emociones intensas y reacciones rápidas.',
+                'Tauro': 'Necesidad de seguridad emocional y estabilidad.',
+                'Géminis': 'Emociones cambiantes y necesidad de comunicación.',
+                'Cáncer': 'Muy sensible y protector con los seres queridos.',
+                'Leo': 'Necesidad de reconocimiento y expresión emocional.',
+                'Virgo': 'Emociones controladas y tendencia al análisis.',
+                'Libra': 'Búsqueda de armonía emocional y equilibrio.',
+                'Escorpio': 'Emociones profundas y transformadoras.',
+                'Sagitario': 'Optimismo emocional y búsqueda de aventuras.',
+                'Capricornio': 'Emociones reservadas y necesidad de control.',
+                'Acuario': 'Emociones únicas y necesidad de independencia.',
+                'Piscis': 'Gran sensibilidad e intuición emocional.'
+            };
+            return descripciones[signo];
+        }
+
+        function obtenerDescripcionAscendente(signo) {
+            const descripciones = {
+                'Aries': 'Proyectas energía, liderazgo y determinación.',
+                'Tauro': 'Proyectas estabilidad, confiabilidad y calma.',
+                'Géminis': 'Proyectas inteligencia, versatilidad y sociabilidad.',
+                'Cáncer': 'Proyectas sensibilidad, cuidado y protección.',
+                'Leo': 'Proyectas confianza, carisma y creatividad.',
+                'Virgo': 'Proyectas organización, precisión y servicio.',
+                'Libra': 'Proyectas elegancia, diplomacia y equilibrio.',
+                'Escorpio': 'Proyectas intensidad, misterio y magnetismo.',
+                'Sagitario': 'Proyectas optimismo, aventura y sabiduría.',
+                'Capricornio': 'Proyectas seriedad, responsabilidad y ambición.',
+                'Acuario': 'Proyectas originalidad, independencia e innovación.',
+                'Piscis': 'Proyectas sensibilidad, compasión y espiritualidad.'
+            };
+            return descripciones[signo];
+        }
+
+        function generarInterpretacionPersonalizada(datos, signos) {
+            let interpretacion = `<p><strong>Hola ${datos.nombre.split(' ')[0]},</strong></p>`;
+            
+            interpretacion += `<p>Tu carta astral revela una personalidad fascinante con ${signos.sol} como tu signo solar, ${signos.luna} en tu Luna y ${signos.ascendente} como ascendente.</p>`;
+            
+            // Interpretación basada en el interés principal
+            switch(datos.interes) {
+                case 'personalidad':
+                    interpretacion += `<p><strong>Sobre tu personalidad:</strong> La combinación de ${signos.sol} (Sol) y ${signos.luna} (Luna) crea una personalidad única. Tu esencia ${signos.sol} se equilibra con la sensibilidad emocional de ${signos.luna}, mientras que tu ascendente ${signos.ascendente} influye en cómo otros te perciben.</p>`;
+                    break;
+                case 'amor':
+                    interpretacion += `<p><strong>En el amor:</strong> Con Venus en ${signos.venus}, tiendes a valorar ${obtenerEstiloAmor(signos.venus)}. Tu Luna en ${signos.luna} indica que emocionalmente necesitas ${obtenerNecesidadEmocional(signos.luna)} en las relaciones.</p>`;
+                    break;
+                case 'carrera':
+                    interpretacion += `<p><strong>En tu carrera:</strong> Tu Sol en ${signos.sol} sugiere que brillarás en profesiones que requieran ${obtenerTalentoProfesional(signos.sol)}. Marte en ${signos.marte} indica que tu energía se dirige hacia ${obtenerEnfoqueProfesional(signos.marte)}.</p>`;
+                    break;
+                default:
+                    interpretacion += `<p><strong>Análisis general:</strong> Tu combinación astrológica sugiere una persona con gran potencial para el crecimiento personal y el éxito en múltiples áreas de la vida.</p>`;
+            }
+
+            interpretacion += `<p><strong>Consejo personalizado:</strong> Aprovecha la energía de tu ${signos.sol} solar para liderar, mientras permites que tu Luna en ${signos.luna} te guíe emocionalmente. Tu ascendente ${signos.ascendente} te ayudará a proyectar la imagen adecuada en cada situación.</p>`;
+            
+            if (datos.comentarios) {
+                interpretacion += `<p><strong>Nota sobre tus comentarios:</strong> Has mencionado "${datos.comentarios}". Esto resuena especialmente con tu configuración astrológica actual.</p>`;
+            }
+
+            return interpretacion;
+        }
+
+        function obtenerEstiloAmor(signoVenus) {
+            const estilos = {
+                'Aries': 'la pasión y la espontaneidad',
+                'Tauro': 'la estabilidad y los placeres sensoriales',
+                'Géminis': 'la comunicación y la variedad',
+                'Cáncer': 'la seguridad emocional y el cuidado',
+                'Leo': 'el romance y la admiración',
+                'Virgo': 'la devoción y los gestos prácticos',
+                'Libra': 'la armonía y la belleza',
+                'Escorpio': 'la intensidad y la profundidad',
+                'Sagitario': 'la aventura y la libertad',
+                'Capricornio': 'la estabilidad y el compromiso',
+                'Acuario': 'la amistad y la originalidad',
+                'Piscis': 'la conexión espiritual y la compasión'
+            };
+            return estilos[signoVenus];
+        }
+
+        function obtenerNecesidadEmocional(signoLuna) {
+            const necesidades = {
+                'Aries': 'independencia y acción',
+                'Tauro': 'seguridad y estabilidad',
+                'Géminis': 'variedad y comunicación',
+                'Cáncer': 'protección y cuidado',
+                'Leo': 'reconocimiento y aprecio',
+                'Virgo': 'orden y utilidad',
+                'Libra': 'armonía y equilibrio',
+                'Escorpio': 'intensidad y transformación',
+                'Sagitario': 'libertad y aventura',
+                'Capricornio': 'estructura y logros',
+                'Acuario': 'independencia y originalidad',
+                'Piscis': 'comprensión y conexión espiritual'
+            };
+            return necesidades[signoLuna];
+        }
+
+        function obtenerTalentoProfesional(signoSol) {
+            const talentos = {
+                'Aries': 'liderazgo y iniciativa',
+                'Tauro': 'persistencia y habilidades prácticas',
+                'Géminis': 'comunicación y versatilidad',
+                'Cáncer': 'cuidado y intuición',
+                'Leo': 'creatividad y carisma',
+                'Virgo': 'análisis y perfección',
+                'Libra': 'diplomacia y estética',
+                'Escorpio': 'investigación y transformación',
+                'Sagitario': 'enseñanza y exploración',
+                'Capricornio': 'organización y ambición',
+                'Acuario': 'innovación y visión',
+                'Piscis': 'creatividad y compasión'
+            };
+            return talentos[signoSol];
+        }
+
+        function obtenerEnfoqueProfesional(signoMarte) {
+            const enfoques = {
+                'Aries': 'proyectos nuevos y desafiantes',
+                'Tauro': 'construcción sólida y duradera',
+                'Géminis': 'múltiples proyectos y comunicación',
+                'Cáncer': 'cuidado y protección de otros',
+                'Leo': 'expresión creativa y reconocimiento',
+                'Virgo': 'perfeccionamiento y servicio',
+                'Libra': 'colaboración y justicia',
+                'Escorpio': 'transformación e investigación',
+                'Sagitario': 'expansión y enseñanza',
+                'Capricornio': 'logros a largo plazo',
+                'Acuario': 'innovación y causas humanitarias',
+                'Piscis': 'ayuda y expresión artística'
+            };
+            return enfoques[signoMarte];
+        }
+
+        function determinarSigno(mes, dia) {
+            if ((mes == 3 && dia >= 21) || (mes == 4 && dia <= 19)) return 'Aries';
+            if ((mes == 4 && dia >= 20) || (mes == 5 && dia <= 20)) return 'Tauro';
+            if ((mes == 5 && dia >= 21) || (mes == 6 && dia <= 20)) return 'Géminis';
+            if ((mes == 6 && dia >= 21) || (mes == 7 && dia <= 22)) return 'Cáncer';
+            if ((mes == 7 && dia >= 23) || (mes == 8 && dia <= 22)) return 'Leo';
+            if ((mes == 8 && dia >= 23) || (mes == 9 && dia <= 22)) return 'Virgo';
+            if ((mes == 9 && dia >= 23) || (mes == 10 && dia <= 22)) return 'Libra';
+            if ((mes == 10 && dia >= 23) || (mes == 11 && dia <= 21)) return 'Escorpio';
+            if ((mes == 11 && dia >= 22) || (mes == 12 && dia <= 21)) return 'Sagitario';
+            if ((mes == 12 && dia >= 22) || (mes == 1 && dia <= 19)) return 'Capricornio';
+            if ((mes == 1 && dia >= 20) || (mes == 2 && dia <= 18)) return 'Acuario';
+            if ((mes == 2 && dia >= 19) || (mes == 3 && dia <= 20)) return 'Piscis';
+        }
+
+        // Smooth scrolling para navegación
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96a52abd50c804ad',t:'MTc1NDM4NTA4NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
