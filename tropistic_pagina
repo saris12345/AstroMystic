@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astrum - Servicios de Astrología Profesional</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Inter:wght@300;400;500&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+        }
+        
+        .title-font {
+            font-family: 'Cinzel', serif;
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        .constellation {
+            background-image: radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+                              radial-gradient(2px 2px at 40px 70px, #fff, transparent),
+                              radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                              radial-gradient(1px 1px at 130px 80px, #fff, transparent),
+                              radial-gradient(2px 2px at 160px 30px, #fff, transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+        }
+        
+        .glow {
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.3);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(147, 51, 234, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white constellation">
+    <!-- Estrellas animadas -->
+    <div class="stars" id="stars"></div>
+    
+    <!-- Header -->
+    <header class="relative z-10 bg-black/20 backdrop-blur-sm border-b border-purple-500/20">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-indigo-600 rounded-full flex items-center justify-center">
+                        <span class="text-xl">✦</span>
+                    </div>
+                    <h1 class="title-font text-2xl font-semibold bg-gradient-to-r from-purple-400 to-indigo-300 bg-clip-text text-transparent">
+                        Astrum
+                    </h1>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#inicio" class="hover:text-purple-300 transition-colors">Inicio</a>
+                    <a href="#servicios" class="hover:text-purple-300 transition-colors">Servicios</a>
+                    <a href="#contacto" class="hover:text-purple-300 transition-colors">Contacto</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="relative z-10 py-20">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="title-font text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-400 via-pink-300 to-indigo-400 bg-clip-text text-transparent">
+                Descubre tu Destino
+            </h2>
+            <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+                Servicios profesionales de astrología para guiarte en tu camino. Consultas personalizadas enviadas directamente a tu email.
+            </p>
+            <button onclick="scrollToSection('servicios')" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 px-8 py-4 rounded-full text-lg font-medium transition-all glow">
+                Explorar Servicios
+            </button>
+        </div>
+    </section>
+
+    <!-- Servicios -->
+    <section id="servicios" class="relative z-10 py-20">
+        <div class="container mx-auto px-6">
+            <h3 class="title-font text-4xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-indigo-300 bg-clip-text text-transparent">
+                Nuestros Servicios
+            </h3>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+                <div class="bg-black/30 backdrop-blur-sm border border-purple-500/20 rounded-xl p-8 card-hover">
+                    <div class="text-4xl mb-4 text-center">🌙</div>
+                    <h4 class="title-font text-2xl font-semibold mb-4 text-center">Carta Natal</h4>
+                    <p class="text-gray-300 mb-6 text-center">Análisis completo de tu personalidad y potencial basado en tu fecha, hora y lugar de nacimiento.</p>
+                    <div class="text-center">
+                        <button onclick="openServiceForm('Carta Natal')" class="w-full bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg transition-colors">
+                            Solicitar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-black/30 backdrop-blur-sm border border-purple-500/20 rounded-xl p-8 card-hover">
+                    <div class="text-4xl mb-4 text-center">⭐</div>
+                    <h4 class="title-font text-2xl font-semibold mb-4 text-center">Predicción Anual</h4>
+                    <p class="text-gray-300 mb-6 text-center">Conoce las tendencias y oportunidades que te esperan durante los próximos 12 meses.</p>
+                    <div class="text-center">
+                        <button onclick="openServiceForm('Predicción Anual')" class="w-full bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg transition-colors">
+                            Solicitar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-black/30 backdrop-blur-sm border border-purple-500/20 rounded-xl p-8 card-hover">
+                    <div class="text-4xl mb-4 text-center">💫</div>
+                    <h4 class="title-font text-2xl font-semibold mb-4 text-center">Compatibilidad</h4>
+                    <p class="text-gray-300 mb-6 text-center">Análisis de compatibilidad amorosa o de amistad entre dos personas.</p>
+                    <div class="text-center">
+                        <button onclick="openServiceForm('Compatibilidad')" class="w-full bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg transition-colors">
+                            Solicitar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-black/30 backdrop-blur-sm border border-purple-500/20 rounded-xl p-8 card-hover">
+                    <div class="text-4xl mb-4 text-center">🔮</div>
+                    <h4 class="title-font text-2xl font-semibold mb-4 text-center">3 Preguntas</h4>
+                    <p class="text-gray-300 mb-6 text-center">Consulta directa con nuestra astróloga. Haz hasta 3 preguntas específicas sobre tu vida.</p>
+                    <div class="text-center">
+                        <button onclick="openServiceForm('3 Preguntas')" class="w-full bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg transition-colors">
+                            Solicitar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Contacto -->
+    <section id="contacto" class="relative z-10 py-20">
+        <div class="container mx-auto px-6">
+            <h3 class="title-font text-4xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-indigo-300 bg-clip-text text-transparent">
+                Contacto
+            </h3>
+            
+            <div class="max-w-2xl mx-auto">
+                <div class="bg-black/30 backdrop-blur-sm border border-purple-500/20 rounded-xl p-8">
+                    <form id="contactForm" onsubmit="handleContactForm(event)">
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Nombre</label>
+                                <input type="text" required class="w-full bg-black/50 border border-purple-500/30 rounded-lg px-4 py-3 focus:border-purple-400 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Email</label>
+                                <input type="email" required class="w-full bg-black/50 border border-purple-500/30 rounded-lg px-4 py-3 focus:border-purple-400 focus:outline-none">
+                            </div>
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium mb-2">Mensaje</label>
+                            <textarea rows="4" required class="w-full bg-black/50 border border-purple-500/30 rounded-lg px-4 py-3 focus:border-purple-400 focus:outline-none"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 px-6 py-3 rounded-lg font-medium transition-all glow">
+                            Enviar Mensaje
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal para servicios -->
+    <div id="serviceModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-gradient-to-br from-gray-900 to-black border border-purple-500/30 rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h4 class="title-font text-2xl font-semibold" id="serviceTitle">Servicio</h4>
+                <button onclick="closeServiceForm()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            
+            <form id="serviceForm" onsubmit="handleServiceForm(event)">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-2">Nombre completo *</label>
+                    <input type="text" name="nombre" required class="w-full bg-black/50 border border-purple-500/30 rounded-lg px-4 py-3 focus:border-purple-400 focus:outline-none">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-2">Email *</label>
+                    <input type="email" name="email" required class="w-full bg-black/50 border border-purple-500/30 rounded-lg px-4 py-3 focus:border-purple-400 focus:outline-none">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-2">Fecha de nacimiento *</label>
+                    <input type="date" name="fecha" required class="w-full bg-black/50 border border-purple-500/30 rounded-lg px-4 py-3 focus:border-purple-400 focus:outline-none">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-2">Hora de nacimiento</label>
+                    <input type="time" name="hora" class="w-full bg-black/50 border border-purple-500/30 rounded-lg px-4 py-3 focus:border-purple-400 focus:outline-none">
+                    <p class="text-xs text-gray-400 mt-1">Si no la conoces, déjalo vacío</p>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-2">Ciudad de nacimiento *</label>
+                    <input type="text" name="ciudad" required class="w-full bg-black/50 border border-purple-500/30 rounded-lg px-4 py-3 focus:border-purple-400 focus:outline-none">
+                </div>
+
+                <!-- Campos específicos para compatibilidad -->
+                <div id="compatibilityFields" class="hidden">
+                    <div class="border-t border-purple-500/20 pt-4 mb-4">
+                        <h5 class="text-lg font-medium mb-3 text-purple-300">Datos de la otra persona</h5>
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">Nombre de la otra persona *</label>
+                            <input type="text" name="nombre2" class="w-full bg-black/50 border border-purple-500/30 rounded-lg px-4 py-3 focus:border-purple-400 focus:outline-none">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">Fecha de nacimiento *</label>
+                            <input type="date" name="fecha2" class="w-full bg-black/50 border border-purple-500/30 rounded-lg px-4 py-3 focus:border-purple-400 focus:outline-none">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">Hora de nacimiento</label>
+                            <input type="time" name="hora2" class="w-full bg-black/50 border border-purple-500/30 rounded-lg px-4 py-3 focus:border-purple-400 focus:outline-none">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">Ciudad de nacimiento *</label>
+                            <input type="text" name="ciudad2" class="w-full bg-black/50 border border-purple-500/30 rounded-lg px-4 py-3 focus:border-purple-400 focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campos específicos para 3 preguntas -->
+                <div id="questionsFields" class="hidden">
+                    <div class="border-t border-purple-500/20 pt-4 mb-4">
+                        <h5 class="text-lg font-medium mb-3 text-purple-300">Tus 3 preguntas</h5>
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">Primera pregunta *</label>
+                            <textarea name="pregunta1" rows="2" required class="w-full bg-black/50 border border-purple-500/30 rounded-lg px-4 py-3 focus:border-purple-400 focus:outline-none"></textarea>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">Segunda pregunta *</label>
+                            <textarea name="pregunta2" rows="2" required class="w-full bg-black/50 border border-purple-500/30 rounded-lg px-4 py-3 focus:border-purple-400 focus:outline-none"></textarea>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">Tercera pregunta *</label>
+                            <textarea name="pregunta3" rows="2" required class="w-full bg-black/50 border border-purple-500/30 rounded-lg px-4 py-3 focus:border-purple-400 focus:outline-none"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-medium mb-2">Comentarios adicionales</label>
+                    <textarea name="comentarios" rows="3" class="w-full bg-black/50 border border-purple-500/30 rounded-lg px-4 py-3 focus:border-purple-400 focus:outline-none" placeholder="Cualquier información adicional que consideres relevante..."></textarea>
+                </div>
+                
+                <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 px-6 py-3 rounded-lg font-medium transition-all glow">
+                    Continuar al Pago
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para métodos de pago -->
+    <div id="paymentModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-gradient-to-br from-gray-900 to-black border border-purple-500/30 rounded-xl max-w-md w-full p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h4 class="title-font text-2xl font-semibold">Método de Pago</h4>
+                <button onclick="closePaymentModal()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            
+            <div class="mb-6">
+                <p class="text-gray-300 text-center mb-4">Selecciona tu método de pago preferido:</p>
+                <div class="text-center mb-4">
+                    <span class="text-3xl font-bold text-purple-400" id="finalPrice">€45</span>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <button onclick="selectPaymentMethod('paypal')" class="w-full bg-blue-600 hover:bg-blue-700 px-6 py-4 rounded-lg transition-colors flex items-center justify-center space-x-3">
+                    <span class="text-2xl">💳</span>
+                    <span class="font-medium">PayPal</span>
+                </button>
+
+                <button onclick="selectPaymentMethod('tarjeta')" class="w-full bg-gray-700 hover:bg-gray-600 px-6 py-4 rounded-lg transition-colors flex items-center justify-center space-x-3">
+                    <span class="text-2xl">💳</span>
+                    <span class="font-medium">Tarjeta de Crédito/Débito</span>
+                </button>
+
+                <button onclick="selectPaymentMethod('transferencia')" class="w-full bg-green-600 hover:bg-green-700 px-6 py-4 rounded-lg transition-colors flex items-center justify-center space-x-3">
+                    <span class="text-2xl">🏦</span>
+                    <span class="font-medium">Transferencia Bancaria</span>
+                </button>
+
+                <button onclick="selectPaymentMethod('bizum')" class="w-full bg-orange-600 hover:bg-orange-700 px-6 py-4 rounded-lg transition-colors flex items-center justify-center space-x-3">
+                    <span class="text-2xl">📱</span>
+                    <span class="font-medium">Bizum</span>
+                </button>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-purple-500/20">
+                <button onclick="goBackToForm()" class="w-full text-purple-400 hover:text-purple-300 py-2 transition-colors">
+                    ← Volver al formulario
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <footer class="relative z-10 bg-black/40 border-t border-purple-500/20 py-8">
+        <div class="container mx-auto px-6 text-center">
+            <div class="flex items-center justify-center space-x-3 mb-4">
+                <div class="w-8 h-8 bg-gradient-to-br from-purple-400 to-indigo-600 rounded-full flex items-center justify-center">
+                    <span class="text-lg">✦</span>
+                </div>
+                <span class="title-font text-xl font-semibold">Astrum</span>
+            </div>
+            <p class="text-gray-400">© 2024 Astrum. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Crear estrellas animadas
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numberOfStars = 50;
+            
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Navegación suave
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        // Variables globales para el servicio
+        let currentService = '';
+        let currentFormData = {};
+        
+        // Precios de los servicios
+        const servicePrices = {
+            'Carta Natal': 45,
+            'Predicción Anual': 65,
+            'Compatibilidad': 55,
+            '3 Preguntas': 35
+        };
+
+        // Abrir formulario de servicio
+        function openServiceForm(serviceName) {
+            currentService = serviceName;
+            document.getElementById('serviceTitle').textContent = serviceName;
+            
+            // Ocultar todos los campos específicos
+            document.getElementById('compatibilityFields').classList.add('hidden');
+            document.getElementById('questionsFields').classList.add('hidden');
+            
+            // Mostrar campos específicos según el servicio
+            if (serviceName === 'Compatibilidad') {
+                document.getElementById('compatibilityFields').classList.remove('hidden');
+                // Hacer campos requeridos
+                document.querySelector('input[name="nombre2"]').required = true;
+                document.querySelector('input[name="fecha2"]').required = true;
+                document.querySelector('input[name="ciudad2"]').required = true;
+            } else if (serviceName === '3 Preguntas') {
+                document.getElementById('questionsFields').classList.remove('hidden');
+                // Hacer preguntas requeridas
+                document.querySelector('textarea[name="pregunta1"]').required = true;
+                document.querySelector('textarea[name="pregunta2"]').required = true;
+                document.querySelector('textarea[name="pregunta3"]').required = true;
+            } else {
+                // Para Carta Natal y Predicción Anual, quitar required de campos específicos
+                document.querySelector('input[name="nombre2"]').required = false;
+                document.querySelector('input[name="fecha2"]').required = false;
+                document.querySelector('input[name="ciudad2"]').required = false;
+                document.querySelector('textarea[name="pregunta1"]').required = false;
+                document.querySelector('textarea[name="pregunta2"]').required = false;
+                document.querySelector('textarea[name="pregunta3"]').required = false;
+            }
+            
+            document.getElementById('serviceModal').classList.remove('hidden');
+            document.getElementById('serviceModal').classList.add('flex');
+        }
+
+        // Cerrar formulario de servicio
+        function closeServiceForm() {
+            document.getElementById('serviceModal').classList.add('hidden');
+            document.getElementById('serviceModal').classList.remove('flex');
+            document.getElementById('serviceForm').reset();
+        }
+
+        // Manejar envío de formulario de servicio
+        function handleServiceForm(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            currentFormData = {
+                servicio: currentService,
+                nombre: formData.get('nombre'),
+                email: formData.get('email'),
+                fecha: formData.get('fecha'),
+                hora: formData.get('hora'),
+                ciudad: formData.get('ciudad'),
+                comentarios: formData.get('comentarios')
+            };
+
+            // Datos adicionales según el servicio
+            if (currentService === 'Compatibilidad') {
+                currentFormData.nombre2 = formData.get('nombre2');
+                currentFormData.fecha2 = formData.get('fecha2');
+                currentFormData.hora2 = formData.get('hora2');
+                currentFormData.ciudad2 = formData.get('ciudad2');
+            } else if (currentService === '3 Preguntas') {
+                currentFormData.pregunta1 = formData.get('pregunta1');
+                currentFormData.pregunta2 = formData.get('pregunta2');
+                currentFormData.pregunta3 = formData.get('pregunta3');
+            }
+
+            // Mostrar modal de pago
+            showPaymentModal();
+        }
+
+        // Mostrar modal de métodos de pago
+        function showPaymentModal() {
+            const price = servicePrices[currentService];
+            document.getElementById('finalPrice').textContent = '€' + price;
+            
+            // Ocultar modal de servicio y mostrar modal de pago
+            document.getElementById('serviceModal').classList.add('hidden');
+            document.getElementById('paymentModal').classList.remove('hidden');
+            document.getElementById('paymentModal').classList.add('flex');
+        }
+
+        // Cerrar modal de pago
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.add('hidden');
+            document.getElementById('paymentModal').classList.remove('flex');
+        }
+
+        // Volver al formulario desde el pago
+        function goBackToForm() {
+            closePaymentModal();
+            document.getElementById('serviceModal').classList.remove('hidden');
+            document.getElementById('serviceModal').classList.add('flex');
+        }
+
+        // Seleccionar método de pago
+        function selectPaymentMethod(method) {
+            const methodNames = {
+                'paypal': 'PayPal',
+                'tarjeta': 'Tarjeta de Crédito/Débito',
+                'transferencia': 'Transferencia Bancaria',
+                'bizum': 'Bizum'
+            };
+
+            const price = servicePrices[currentService];
+            
+            let mensaje = `¡Solicitud completada con éxito!\n\n`;
+            mensaje += `Servicio: ${currentFormData.servicio}\n`;
+            mensaje += `Precio: €${price}\n`;
+            mensaje += `Método de pago: ${methodNames[method]}\n`;
+            mensaje += `Cliente: ${currentFormData.nombre}\n`;
+            mensaje += `Email: ${currentFormData.email}\n\n`;
+            
+            if (currentService === '3 Preguntas') {
+                mensaje += `Tus preguntas han sido registradas y serán respondidas por nuestra astróloga experta.\n\n`;
+            } else if (currentService === 'Compatibilidad') {
+                mensaje += `Analizaremos la compatibilidad entre ${currentFormData.nombre} y ${currentFormData.nombre2}.\n\n`;
+            }
+            
+            mensaje += `Recibirás las instrucciones de pago y tu consulta astrológica personalizada en tu email en un plazo de 24-48 horas.\n\n`;
+            mensaje += `¡Gracias por confiar en Astrum!`;
+            
+            alert(mensaje);
+            
+            // Cerrar todos los modales y limpiar datos
+            closePaymentModal();
+            closeServiceForm();
+            currentFormData = {};
+        }
+
+
+
+        // Manejar formulario de contacto
+        function handleContactForm(event) {
+            event.preventDefault();
+            alert('¡Mensaje enviado con éxito! Te responderemos en un plazo de 24 horas.');
+            event.target.reset();
+        }
+
+        // Navegación suave para enlaces del header
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Cerrar modales al hacer clic fuera
+        document.getElementById('serviceModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeServiceForm();
+            }
+        });
+
+        document.getElementById('paymentModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePaymentModal();
+            }
+        });
+
+        // Inicializar estrellas al cargar la página
+        createStars();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'982a42d3516cf777',t:'MTc1ODQ2NTAzMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
